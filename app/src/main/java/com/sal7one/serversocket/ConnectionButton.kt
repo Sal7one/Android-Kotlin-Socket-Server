@@ -1,10 +1,7 @@
 package com.sal7one.serversocket
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Text
-import androidx.compose.material3.contentColorFor
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
@@ -15,8 +12,7 @@ fun ConnectionButton(btnText: String, btnBackground: Color, onClickMethod: () ->
         contentAlignment = Alignment.Center
     ) {
         Button(
-            colors = ButtonDefaults.buttonColors()
-                .also { contentColorFor(backgroundColor = btnBackground) },
+            colors = ButtonDefaults.buttonColors(btnBackground),
             onClick = { onClickMethod() }) {
             Text(btnText)
         }

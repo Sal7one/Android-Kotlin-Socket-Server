@@ -10,8 +10,8 @@ import kotlinx.coroutines.channels.Channel
 
 class SensorHandler(context: Context) : SensorEventListener {
 
-    private lateinit var sensorManager: SensorManager
-    val sesnorData: Channel<LightSensorData> = Channel(Channel.UNLIMITED)
+    private var sensorManager: SensorManager
+    val sensorData: Channel<LightSensorData> = Channel(Channel.UNLIMITED)
 
     init {
         sensorManager = context.getSystemService(ComponentActivity.SENSOR_SERVICE) as SensorManager
@@ -22,9 +22,10 @@ class SensorHandler(context: Context) : SensorEventListener {
     override fun onSensorChanged(event: SensorEvent?) {
         if (event != null) {
             if (event.sensor.type == Sensor.TYPE_LIGHT) {
-                sesnorData.trySend(
+                val cleanData =  event.values[0].toString().replace(("[^\\d.]").toRegex(), "")
+                sensorData.trySend(
                     LightSensorData(
-                        event.values[0].toString()
+                        cleanData
                     )
                 )
             }
