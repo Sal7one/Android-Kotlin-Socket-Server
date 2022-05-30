@@ -22,13 +22,22 @@ class AppViewModel : ViewModel() {
         while (true) {
             try {
                 val socket = Socket(hostAddress, portAddress)
-                socket.soTimeout = 4500
                 val dos = DataOutputStream(socket.getOutputStream())
-                dos.writeUTF(messageToSocket.receive())
-                _connectionStatus.value = true
-                dos.flush()
-                dos.close()
-                socket.close()
+
+                if(!_connectionStatus.value){
+                    socket.soTimeout = 4500
+                    dos.writeUTF(messageToSocket.receive())
+                    _connectionStatus.value = true
+                    dos.flush()
+                    dos.close()
+                    socket.close()
+                }else{
+                    dos.flush()
+                    dos.close()
+                    socket.close()
+                    _connectionStatus.value = false
+                    break
+                }
             } catch (e: Exception) {
                 _connectionStatus.value = false
                 Log.e("AppViewModel", "$e")
