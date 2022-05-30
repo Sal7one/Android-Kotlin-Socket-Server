@@ -6,7 +6,7 @@ import java.util.*
 import javax.swing.JFrame
 import javax.swing.JLabel
 
-class AppFrame() : JFrame() {
+class AppFrame : JFrame() {
     private var luminosity = JLabel("Not Connected...")
     private val labelFont = Font("SansSerif", Font.BOLD, 24)
 
@@ -25,7 +25,7 @@ class AppFrame() : JFrame() {
 
     private fun changeColors(phoneLuminosity: String, backgroundColor: Color, labelColor: Color) {
         contentPane.background = backgroundColor
-        luminosity.text = "Light Luminity is: $phoneLuminosity"
+        luminosity.text = "Light Luminosity is: $phoneLuminosity"
         luminosity.foreground = labelColor
     }
 
@@ -47,8 +47,8 @@ class AppFrame() : JFrame() {
                             changeColors(cleanSensorData, Color.GRAY, Color.CYAN)
                         else
                             changeColors(cleanSensorData, Color.WHITE, Color.BLACK)
-                    } catch (numExcp: NumberFormatException) {
-                        numExcp.printStackTrace()
+                    } catch (numException: NumberFormatException) {
+                        numException.printStackTrace()
                     }
                 }
             }
