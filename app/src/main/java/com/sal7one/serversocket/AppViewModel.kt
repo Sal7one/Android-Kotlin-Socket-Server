@@ -19,25 +19,20 @@ class AppViewModel : ViewModel() {
     val messageToSocket = Channel<String>()
 
     fun openSocketConnection() = viewModelScope.launch(Dispatchers.IO) {
+        _connectionStatus.value = !_connectionStatus.value
+
         while (true) {
             try {
                 val socket = Socket(hostAddress, portAddress)
                 val dos = DataOutputStream(socket.getOutputStream())
 
-                if(!_connectionStatus.value){
+                if(_connectionStatus.value){
                     socket.soTimeout = 4500
                     dos.writeUTF(messageToSocket.receive())
-                    _connectionStatus.value = true
-                    dos.flush()
-                    dos.close()
-                    socket.close()
-                }else{
-                    dos.flush()
-                    dos.close()
-                    socket.close()
-                    _connectionStatus.value = false
-                    break
                 }
+                dos.flush()
+                dos.close()
+                socket.close()
             } catch (e: Exception) {
                 _connectionStatus.value = false
                 Log.e("AppViewModel", "$e")
