@@ -1,14 +1,17 @@
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.launch
 import java.awt.Color
 import java.awt.FlowLayout
 import java.awt.Font
-import java.net.ServerSocket
-import java.util.*
 import javax.swing.JFrame
 import javax.swing.JLabel
 
-class AppFrame : JFrame() {
-    private var luminosity = JLabel("Not Connected...")
+class AppFrame(uiData: Channel<String>) : JFrame() {
+    private var luminosityLabel = JLabel("Not Connected...")
     private val labelFont = Font("SansSerif", Font.BOLD, 24)
+
 
     init {
         title = "Sensor Socket"
@@ -18,40 +21,25 @@ class AppFrame : JFrame() {
         setLocation(500, 500)
         layout = FlowLayout()
         contentPane.background = Color.WHITE
-        luminosity.font = labelFont
-        add(luminosity)
-        startWebSocket()
+        luminosityLabel.font = labelFont
+        add(luminosityLabel)
+
+        GlobalScope.launch {
+            uiData.receiveAsFlow().collect{updateData(it)}
+        }
     }
 
     private fun changeColors(phoneLuminosity: String, backgroundColor: Color, labelColor: Color) {
         contentPane.background = backgroundColor
-        luminosity.text = "Light Luminosity is: $phoneLuminosity"
-        luminosity.foreground = labelColor
+        luminosityLabel.text = "Light Luminosity is: $phoneLuminosity"
+        luminosityLabel.foreground = labelColor
     }
 
-    @Throws(Exception::class)
-    fun startWebSocket() {
-        val serverSocket = ServerSocket(4999)
-        while (true) {
-            val client = serverSocket.accept()
-            val reader = Scanner(client.getInputStream())
-            while (reader.hasNextLine()) {
-                val sensorData = reader.nextLine()
-                val cleanSensorData = sensorData.toString().replace(("[^\\d.]").toRegex(), "")
+    private fun updateData(uiData: String) {
+        luminosityLabel.text = uiData
+    }
 
-                if (cleanSensorData != "" && cleanSensorData.isNotEmpty() && cleanSensorData != " ") {
-                    try {
-                        if (cleanSensorData.toDouble() < 100)
-                            changeColors(cleanSensorData, Color.BLACK, Color.WHITE)
-                        else if (cleanSensorData.toDouble() < 500)
-                            changeColors(cleanSensorData, Color.GRAY, Color.CYAN)
-                        else
-                            changeColors(cleanSensorData, Color.WHITE, Color.BLACK)
-                    } catch (numException: NumberFormatException) {
-                        numException.printStackTrace()
-                    }
-                }
-            }
-        }
+    private fun filterResult(sensorData: String): String {
+        return sensorData.replace(("[^\\d.]").toRegex(), "")
     }
 }
