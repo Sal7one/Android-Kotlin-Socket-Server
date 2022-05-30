@@ -23,9 +23,8 @@ class MainActivity : ComponentActivity() {
         setContent {
             ServerSocketTheme {
                 val context = LocalContext.current
-                val viewModel = AppViewModel(MaterialTheme.colorScheme.primary)
+                val viewModel = AppViewModel()
                 val connectionStatus = viewModel.connectionStatus.collectAsState()
-                val btnColor = viewModel.backgroundColor.collectAsState()
                 val scope = rememberCoroutineScope()
                 var lightSensorData by remember { mutableStateOf(LightSensorData("")) }
 
@@ -33,8 +32,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    LaunchedEffect(key1 = lightSensorData){
-
+                    LaunchedEffect(key1 = lightSensorData) {
                         viewModel.messageToSocket.send(lightSensorData.luminosity)
                     }
                     DisposableEffect(Unit) {
@@ -59,7 +57,7 @@ class MainActivity : ComponentActivity() {
                         Text(text = "Luminosity: ${lightSensorData.luminosity}")
                         Spacer(modifier = Modifier.height(25.dp))
 
-                        ConnectionButton(connectionStatus.value, btnColor.value) {
+                        ConnectionButton(connectionStatus.value) {
                             viewModel.openSocketConnection()
                         }
                     }
