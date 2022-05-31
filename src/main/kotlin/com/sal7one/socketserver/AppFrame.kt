@@ -22,11 +22,13 @@ class AppFrame : JFrame() {
         defaultCloseOperation = DISPOSE_ON_CLOSE
         isVisible = true
         layout = FlowLayout()
-        setSize(350, 200)
+        setSize(370, 210)
         setLocation(500, 500)
-        contentPane.background = Color.WHITE
+        contentPane.background = Color.DARK_GRAY
         luminosityLabel.font = labelFont
+        luminosityLabel.foreground = Color.CYAN
         OtherSensorLabel.font = labelFont
+        OtherSensorLabel.foreground = Color.CYAN
         add(luminosityLabel)
         add(OtherSensorLabel)
     }

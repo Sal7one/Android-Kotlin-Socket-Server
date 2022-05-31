@@ -16,10 +16,10 @@ class SocketServer {
                 val readerType = InputStreamReader(client.inputStream)
                 val reader = BufferedReader(readerType)
 
-                reader.lineSequence().forEach {
-                    if (it != " " && it != "") {
-                        val sensorName = getSensorName(it)
-                        val cleanedData = "$sensorName: ${Controller.filterResult(it)}"
+                reader.lineSequence().forEach { sensorData ->
+                    if (sensorData != "" && sensorData.isNotEmpty() && sensorData != " ") {
+                        val sensorName = getSensorName(sensorData)
+                        val cleanedData = "${Controller.filterSensorName(sensorName)}: ${Controller.filterResult(sensorData)}"
                         if (sensorName.contains("Luminosity")) {
                             AppFrame.luminosityLabel.text = cleanedData
                         } else {

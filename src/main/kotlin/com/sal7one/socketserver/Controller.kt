@@ -10,7 +10,11 @@ class Controller {
 
     companion object {
         fun filterResult(sensorData: String): String {
-            return sensorData.replace(("[^\\d.]").toRegex(), "").replace("(\\u0020)|(\\u0015)".toRegex(), "")
+            return sensorData.replace(("[^\\d.]").toRegex(), "")
+        }
+
+        fun filterSensorName(sensorName: String): String {
+        return sensorName.replace(("[^\\w]").toRegex(), "")
         }
     }
 }
