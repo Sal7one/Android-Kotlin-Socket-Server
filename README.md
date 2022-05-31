@@ -8,7 +8,7 @@
 
 ## Server Code : Kotlin
 Server socket <br>
-Swing GUI to show sesnor Data
+Swing GUI to show Sesnor Data
 
 
 ## Client : Android App
