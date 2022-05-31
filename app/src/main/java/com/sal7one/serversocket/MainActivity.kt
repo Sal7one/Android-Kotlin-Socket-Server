@@ -29,7 +29,8 @@ class MainActivity : ComponentActivity() {
                 val viewModel = AppViewModel()
                 val connectionStatus = viewModel.connectionStatus.collectAsState()
                 val scope = rememberCoroutineScope()
-                var lightSensorData by remember { mutableStateOf(LightSensorData("")) }
+                var lightData by remember { mutableStateOf(SensorData("")) }
+                var accelData by remember { mutableStateOf(SensorData("")) }
                 val ipField = remember { mutableStateOf(TextFieldValue("192.168.8.165")) }
                 val portField = remember { mutableStateOf(TextFieldValue("4999")) }
 
@@ -37,22 +38,33 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    LaunchedEffect(key1 = lightSensorData) {
-                        viewModel.messageToSocket.send(lightSensorData.luminosity)
+                    LaunchedEffect(key1 = lightData.luminosity) {
+                        viewModel.messageToSocket.send(lightData.luminosity)
+                    }
+                    LaunchedEffect(key1 = accelData.accelerometer) {
+                        viewModel.messageToSocket.send(accelData.accelerometer)
                     }
                     DisposableEffect(Unit) {
                         val dataManager = SensorHandler(context)
-                        val job = scope.launch {
-                            dataManager.sensorData
+                        val lightJob = scope.launch {
+                            dataManager.lightData
                                 .receiveAsFlow()
                                 .collect {
-                                    lightSensorData = it
+                                    lightData = it
                                 }
                         }
 
+                        val acellJob = scope.launch {
+                            dataManager.acellData
+                                .receiveAsFlow()
+                                .collect {
+                                    accelData = it
+                                }
+                        }
                         onDispose {
                             dataManager.cancel()
-                            job.cancel()
+                            lightJob.cancel()
+                            acellJob.cancel()
                         }
                     }
 
@@ -60,7 +72,9 @@ class MainActivity : ComponentActivity() {
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Center
                     ) {
-                        Text(text = "Luminosity: ${lightSensorData.luminosity}")
+                        Text(text = lightData.luminosity)
+                        Spacer(modifier = Modifier.height(25.dp))
+                        Text(text = accelData.accelerometer)
                         Spacer(modifier = Modifier.height(25.dp))
                         Row(
                             verticalAlignment = Alignment.CenterVertically,

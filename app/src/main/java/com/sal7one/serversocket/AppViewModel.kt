@@ -24,7 +24,6 @@ class AppViewModel : ViewModel() {
 
         val hostAddress = ip.text.replace(hostPattren.toRegex(), "")
         val portAddress = Integer.parseInt(port.text.replace(portPattren.toRegex(), ""))
-
         while (true) {
             try {
                 val socket = Socket(hostAddress, portAddress)

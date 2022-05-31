@@ -11,21 +11,31 @@ import kotlinx.coroutines.channels.Channel
 class SensorHandler(context: Context) : SensorEventListener {
 
     private var sensorManager: SensorManager
-    val sensorData: Channel<LightSensorData> = Channel(Channel.UNLIMITED)
+    val lightData: Channel<SensorData> = Channel(Channel.UNLIMITED)
+    val acellData: Channel<SensorData> = Channel(Channel.UNLIMITED)
 
     init {
         sensorManager = context.getSystemService(ComponentActivity.SENSOR_SERVICE) as SensorManager
         val lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT)
+        val accelSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
         sensorManager.registerListener(this, lightSensor, SensorManager.SENSOR_DELAY_UI)
+        sensorManager.registerListener(this, accelSensor, SensorManager.SENSOR_DELAY_UI)
     }
 
     override fun onSensorChanged(event: SensorEvent?) {
         if (event != null) {
             if (event.sensor.type == Sensor.TYPE_LIGHT) {
                 val cleanData =  event.values[0].toString().replace(("[^\\d.]").toRegex(), "")
-                sensorData.trySend(
-                    LightSensorData(
-                        cleanData
+                lightData.trySend(
+                    SensorData(
+                        "Luminosity: $cleanData"
+                    )
+                )
+            }else if (event.sensor.type == Sensor.TYPE_ACCELEROMETER){
+                val cleanData =  event.values[0].toString().replace(("[^\\d.]").toRegex(), "")
+                acellData.trySend(
+                    SensorData(
+                        accelerometer = "Accelerometer: $cleanData"
                     )
                 )
             }
