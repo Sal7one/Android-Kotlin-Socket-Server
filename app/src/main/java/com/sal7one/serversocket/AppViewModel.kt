@@ -2,6 +2,7 @@ package com.sal7one.serversocket
 
 
 import android.util.Log
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
@@ -18,8 +19,11 @@ class AppViewModel : ViewModel() {
 
     val messageToSocket = Channel<String>()
 
-    fun openSocketConnection() = viewModelScope.launch(Dispatchers.IO) {
+    fun openSocketConnection(ip: TextFieldValue, port: TextFieldValue) = viewModelScope.launch(Dispatchers.IO) {
         _connectionStatus.value = !_connectionStatus.value
+
+        val hostAddress = ip.text.replace(hostPattren.toRegex(), "")
+        val portAddress = Integer.parseInt(port.text.replace(portPattren.toRegex(), ""))
 
         while (true) {
             try {
@@ -36,12 +40,12 @@ class AppViewModel : ViewModel() {
             } catch (e: Exception) {
                 _connectionStatus.value = false
                 Log.e("AppViewModel", "$e")
+                break
             }
         }
     }
-
-    companion object {
-        const val hostAddress = "192.168.8.146"
-        const val portAddress = 4999
+    companion object{
+        private const val hostPattren = "[^\\d\\.]"
+        private const val portPattren = "[^0-9]"
     }
 }
