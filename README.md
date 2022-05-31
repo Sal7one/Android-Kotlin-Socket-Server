@@ -23,7 +23,7 @@ The app code could use some refactor in the models.
 feel free to do it yourself because i'm probably not coming back to this weekend project ;)
 
 <br>
-This is the Android app Branch. 
-The server has its own Branch.
+This is the main Branch. 
+The server has its own Branch so is the android (app).
 
 This is to make cloning the project easier 
