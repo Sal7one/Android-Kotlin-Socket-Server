@@ -19,8 +19,7 @@ View model
 
 ### Note the server code isn't perfect it's just for testing
 
-The app code could use some refactor in the models.
-feel free to do it yourself because i'm probably not coming back to this weekend project ;)
+The app code could use some refactor in the models if you want to extend it.
 
 <br>
 This is the main Branch. 
