@@ -1,4 +1,4 @@
-package com.sal7one.serversocket
+package com.sal7one.serversocket.ui.features
 
 import android.content.Context
 import android.hardware.Sensor
@@ -6,6 +6,7 @@ import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import androidx.activity.ComponentActivity
+import com.sal7one.serversocket.di.SensorData
 import kotlinx.coroutines.channels.Channel
 
 class SensorHandler(context: Context) : SensorEventListener {

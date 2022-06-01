@@ -1,4 +1,4 @@
-package com.sal7one.serversocket
+package com.sal7one.serversocket.di
 
 data class SensorData(
     val luminosity: String = "",

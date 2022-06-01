@@ -6,15 +6,33 @@ plugins {
 }
 
 group = "me.sal7_one"
-version = "1.0-SNAPSHOT"
+version = "4.0"
 
 repositories {
     mavenCentral()
 }
 
+kotlin {
+    sourceSets {
+            dependencies {
+                implementation(kotlin("test")) // This brings all the platform dependencies automatically
+                implementation("org.jetbrains.kotlin:kotlin-stdlib:1.5.10")
+        }
+    }
+}
 dependencies {
     testImplementation(kotlin("test"))
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.2")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.5.10")
+}
+
+tasks.jar {
+    manifest.attributes["Main-Class"] = "com.sal7one.socketserver.MainKt"
+    val dependencies = configurations
+        .runtimeClasspath
+        .get()
+        .map(::zipTree) // OR .map { zipTree(it) }
+    from(dependencies)
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
 tasks.test {
