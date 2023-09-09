@@ -1,53 +1,75 @@
 package com.sal7one.socketserver
 
 import java.awt.Color
+import java.awt.Component
 import java.awt.Font
-import java.net.DatagramSocket
-import java.net.InetAddress
+import java.awt.Toolkit
+import javax.swing.BorderFactory
 import javax.swing.BoxLayout
 import javax.swing.JFrame
 import javax.swing.JLabel
+import javax.swing.JPanel
+import javax.swing.SwingConstants
 
-
-class AppFrame : JFrame() {
-
+class AppFrame(ip: String?) : JFrame() {
     companion object {
-        var luminosityLabel = JLabel("Not Connected...")
-        var OtherSensorLabel = JLabel("Not Connected...")
+        val luminosityLabel = JLabel("Luminosity: Not Connected...")
+        val otherSensorLabel = JLabel("Accelerometer: Not Connected...")
     }
-
-    private val labelFont = Font("SansSerif", Font.BOLD, 24)
+    private val panel = JPanel()
 
     init {
+        // Frame settings
         title = "Sensor Socket"
+        panel.layout = BoxLayout(panel, BoxLayout.Y_AXIS)  // Set the layout on panel
+        panel.background = Color.DARK_GRAY
+        panel.border = BorderFactory.createEmptyBorder(10, 20, 20, 20)
+        contentPane = panel  // Set the panel as content pane
+
+        // Create UI elements
+        if (ip != null) buildUiElements(ip) else showError()
+
+        // Size and location settings
+        pack()  // Size the frame to fit the content
+        val screenSize = Toolkit.getDefaultToolkit().screenSize
+        val width: Int = (screenSize.width - size.width) / 2
+        val height: Int = (screenSize.height - size.height) / 2
+        setLocation(width, height)
+
+        // Make frame visible after setting all its properties
         isVisible = true
-        layout = BoxLayout(contentPane, BoxLayout.Y_AXIS)
-        setSize(400, 250)
-        setLocation(500, 500)
-        contentPane.background = Color.DARK_GRAY
-        luminosityLabel.font = labelFont
-        luminosityLabel.foreground = Color.CYAN
-        OtherSensorLabel.font = labelFont
-        OtherSensorLabel.foreground = Color.CYAN
-        add(luminosityLabel)
-        add(OtherSensorLabel)
-        networkInfo()
     }
 
-    private fun networkInfo() {
-        try {
-            val socket = DatagramSocket()
-            socket.connect(InetAddress.getByName("8.8.8.8"), 80)
-            val ip = socket.localAddress.hostAddress
-            val ipLabel = JLabel("IP: $ip")
-            val portLabel = JLabel("PORT: $SERVER_PORT")
-            ipLabel.foreground = Color.WHITE
-            portLabel.foreground = Color.WHITE
-            this.add(ipLabel)
-            this.add(portLabel)
-        } catch (excep: Exception) {
-            luminosityLabel.text = excep.toString()
-            excep.printStackTrace()
-        }
+    private fun showError() {
+        val label = JLabel("Error Getting IP", SwingConstants.CENTER)
+        applyStyles(label,  Font("SansSerif", Font.BOLD, 30), Color.RED, Component.CENTER_ALIGNMENT)
+        panel.add(label)
+    }
+
+    private fun buildUiElements(ip: String) {
+        val labelFont = Font("SansSerif", Font.BOLD, 22)
+        val centerAlignment = Component.CENTER_ALIGNMENT
+
+        // Create and customize new labels
+        val ipLabel = JLabel("IP: $ip")
+        val portLabel = JLabel("PORT: $SERVER_PORT")
+
+        applyStyles(luminosityLabel, labelFont, Color.CYAN, centerAlignment)
+        applyStyles(otherSensorLabel, labelFont, Color.CYAN, centerAlignment)
+
+        val networkInfo = Font("SansSerif", Font.BOLD, 18)
+        applyStyles(ipLabel, networkInfo, Color.WHITE, centerAlignment)
+        applyStyles(portLabel, networkInfo, Color.WHITE, centerAlignment)
+
+        panel.add(luminosityLabel)
+        panel.add(otherSensorLabel)
+        panel.add(ipLabel)
+        panel.add(portLabel)
+    }
+
+    private fun applyStyles(label: JLabel, font: Font, color: Color, alignment: Float) {
+        label.font = font
+        label.foreground = color
+        label.alignmentX = alignment
     }
 }

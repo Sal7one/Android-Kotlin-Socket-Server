@@ -1,12 +1,12 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "1.5.10"
+    kotlin("jvm") version "1.8.22"
     application
 }
 
 group = "me.sal7_one"
-version = "4.0"
+version = "5.0"
 
 repositories {
     mavenCentral()
@@ -16,13 +16,13 @@ kotlin {
     sourceSets {
             dependencies {
                 implementation(kotlin("test")) // This brings all the platform dependencies automatically
-                implementation("org.jetbrains.kotlin:kotlin-stdlib:1.5.10")
+                implementation("org.jetbrains.kotlin:kotlin-stdlib:1.8.22")
         }
     }
 }
 dependencies {
     testImplementation(kotlin("test"))
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.5.10")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.8.22")
 }
 
 tasks.jar {
@@ -40,7 +40,7 @@ tasks.test {
 }
 
 tasks.withType<KotlinCompile>() {
-    kotlinOptions.jvmTarget = "1.8"
+    kotlinOptions.jvmTarget = "17"
 }
 
 application {
