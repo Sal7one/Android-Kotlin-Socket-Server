@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">ServerSocket</string>
     <string name="connected">Connected</string>
+    <string name="connecting">Connecting</string>
     <string name="connect">Connect</string>
 </resources>

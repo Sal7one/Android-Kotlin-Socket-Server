@@ -10,20 +10,23 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.LocalContext
 import com.sal7one.serversocket.R
 import com.sal7one.serversocket.ui.theme.ConnectedSocketButtonColor
+import com.sal7one.serversocket.ui.theme.ConnectingSocketButtonColor
 
 @Composable
-fun ConnectionButton(connectionStatus: Boolean, onClickMethod: () -> Unit) {
+fun ConnectionButton(connectionStatus: ConnectionStatus, onClickMethod: () -> Unit) {
     val context = LocalContext.current
 
     val text = when (connectionStatus) {
-        true -> context.getString(R.string.connected)
+        ConnectionStatus.CONNECTED  -> context.getString(R.string.connected)
+        ConnectionStatus.CONNECTING  -> context.getString(R.string.connecting)
         else -> {
             context.getString(R.string.connect)
         }
     }
     val backgroundColor = when (connectionStatus) {
-        true -> ConnectedSocketButtonColor
-        else -> {
+        ConnectionStatus.CONNECTED -> ConnectedSocketButtonColor
+        ConnectionStatus.CONNECTING -> ConnectingSocketButtonColor
+        ConnectionStatus.NOT_CONNECTED -> {
             MaterialTheme.colorScheme.primary
         }
     }
@@ -36,4 +39,10 @@ fun ConnectionButton(connectionStatus: Boolean, onClickMethod: () -> Unit) {
             Text(text)
         }
     }
+}
+
+enum class ConnectionStatus {
+    CONNECTED,
+    CONNECTING,
+    NOT_CONNECTED
 }

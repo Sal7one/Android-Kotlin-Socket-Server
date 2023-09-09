@@ -11,4 +11,5 @@ val PurpleGrey40 = Color(0xFF625b71)
 val Pink40 = Color(0xFF7D5260)
 
 val ConnectedSocketButtonColor = Color(0xFF06bd21)
+val ConnectingSocketButtonColor = Color(0xFFFF9800)
 val DisconnectedSocketButtonColor = Color(0xFF9c0b0b)

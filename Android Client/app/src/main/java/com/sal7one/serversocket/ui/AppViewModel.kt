@@ -9,6 +9,7 @@ import com.sal7one.serversocket.di.SensorData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -25,7 +26,7 @@ class AppViewModel @Inject constructor(
     private val sensorManager: AppSensorManager,
 ) : ViewModel() {
 
-    private val _connectionStatus = MutableStateFlow(false)
+    private val _connectionStatus = MutableStateFlow(ConnectionStatus.NOT_CONNECTED)
     val connectionStatus = _connectionStatus.asStateFlow()
 
     private val _sensors = MutableStateFlow(SensorData())
@@ -87,22 +88,27 @@ class AppViewModel @Inject constructor(
     }
 
     fun toggleConnection() = viewModelScope.launch(Dispatchers.IO) {
-        _connectionStatus.value = !_connectionStatus.value
-
         val cleanedHost = _ipFieldValue.value.replace(HOST_PATTERN.toRegex(), "")
         val cleanedPort = _portFieldValue.value.replace(PORT_PATTERN.toRegex(), "")
         val portAddress = cleanedPort.toIntOrNull() ?: return@launch
 
         saveNetworkSettings(cleanedHost, portAddress)
-        processSocketConnection(cleanedHost, portAddress)
+        if (connectionStatus.value != ConnectionStatus.CONNECTED) {
+            _connectionStatus.value = ConnectionStatus.CONNECTING
+            processSocketConnection(cleanedHost, portAddress)
+        }else{
+            _connectionStatus.value = ConnectionStatus.NOT_CONNECTED
+        }
     }
 
     // TODO server repo
     private suspend fun processSocketConnection(host: String, port: Int) =
         viewModelScope.launch(Dispatchers.IO) {
-            while (_connectionStatus.value) {
+            while (connectionStatus.value != ConnectionStatus.NOT_CONNECTED) {
                 try {
-                    Socket(host, port).use { socket ->
+                    val socket = Socket(host, port)
+                    _connectionStatus.value = ConnectionStatus.CONNECTED
+                    socket.use { socket ->
                         DataOutputStream(socket.getOutputStream()).use { dos ->
                             socket.soTimeout = SOCKET_TIMEOUT
                             dos.writeUTF(messageToSocket.receive())
@@ -110,7 +116,7 @@ class AppViewModel @Inject constructor(
                         }
                     }
                 } catch (exception: Exception) {
-                    _connectionStatus.value = false
+                    _connectionStatus.value = ConnectionStatus.NOT_CONNECTED
                     exception.printStackTrace()
                     break
                 }
