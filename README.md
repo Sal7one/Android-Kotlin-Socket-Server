@@ -16,9 +16,4 @@ Jetpack compose <br>
 Sensors <br>
 View model
 
-
-### Note the server code isn't perfect it's just for testing
-
-The app code could use some refactor in the models if you want to extend it.
-
 <br>
