@@ -1,7 +1,6 @@
 package com.sal7one.serversocket.di
 
 import android.content.Context
-import android.hardware.SensorManager
 import com.sal7one.serversocket.data.AppSensorManager
 import dagger.Module
 import dagger.Provides
@@ -17,7 +16,7 @@ object HardwareModule {
 
     @Singleton
     @Provides
-    fun provideSensorManager(@ApplicationContext appContext: Context): AppSensorManager {
+    fun provideAppSensorManager(@ApplicationContext appContext: Context): AppSensorManager {
         return AppSensorManager(appContext)
     }
 }
