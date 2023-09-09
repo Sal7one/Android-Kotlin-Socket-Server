@@ -49,6 +49,8 @@ android {
 }
 
 dependencies {
+    // TODO remove alpha dependencies - switch to Compose BOM
+    //  Use Build-Logic with plugin convention
     implementation 'androidx.core:core-ktx:1.10.1'
 
     // Hilt
