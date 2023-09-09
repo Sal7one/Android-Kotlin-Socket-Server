@@ -10,6 +10,7 @@ import javax.swing.JFrame
 import javax.swing.JLabel
 import javax.swing.JPanel
 import javax.swing.SwingConstants
+import javax.swing.WindowConstants
 
 class AppFrame(ip: String?) : JFrame() {
     companion object {
@@ -25,7 +26,7 @@ class AppFrame(ip: String?) : JFrame() {
         panel.background = Color.DARK_GRAY
         panel.border = BorderFactory.createEmptyBorder(10, 20, 20, 20)
         contentPane = panel  // Set the panel as content pane
-
+        defaultCloseOperation = WindowConstants.DO_NOTHING_ON_CLOSE;
         // Create UI elements
         if (ip != null) buildUiElements(ip) else showError()
 
