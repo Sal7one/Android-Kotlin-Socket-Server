@@ -11,6 +11,7 @@ import com.sal7one.serversocket.di.SensorData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -40,7 +41,7 @@ class AppViewModel @Inject constructor(
 
     private val messageToSocket = Channel<String>()
 
-    private val _ipFieldValue = MutableStateFlow("192.168.1.1")
+    private val _ipFieldValue = MutableStateFlow("192.168.8.189")
     val ipFieldValue: StateFlow<String> = _ipFieldValue.asStateFlow()
 
     private val _portFieldValue = MutableStateFlow("35642")
@@ -113,6 +114,7 @@ class AppViewModel @Inject constructor(
     // TODO server repo
     private suspend fun processSocketConnection(host: String, port: Int) =
         viewModelScope.launch(Dispatchers.IO) {
+
             while (connectionStatus.value != ConnectionStatus.NOT_CONNECTED) {
                 try {
                     val socket = Socket(host, port)

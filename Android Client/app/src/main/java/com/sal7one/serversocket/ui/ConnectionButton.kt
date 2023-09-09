@@ -1,12 +1,13 @@
 package com.sal7one.serversocket.ui
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import com.sal7one.serversocket.R
 import com.sal7one.serversocket.ui.theme.ConnectedSocketButtonColor
@@ -17,12 +18,13 @@ fun ConnectionButton(connectionStatus: ConnectionStatus, onClickMethod: () -> Un
     val context = LocalContext.current
 
     val text = when (connectionStatus) {
-        ConnectionStatus.CONNECTED  -> context.getString(R.string.connected)
-        ConnectionStatus.CONNECTING  -> context.getString(R.string.connecting)
+        ConnectionStatus.CONNECTED -> context.getString(R.string.connected)
+        ConnectionStatus.CONNECTING -> context.getString(R.string.connecting)
         else -> {
             context.getString(R.string.connect)
         }
     }
+
     val backgroundColor = when (connectionStatus) {
         ConnectionStatus.CONNECTED -> ConnectedSocketButtonColor
         ConnectionStatus.CONNECTING -> ConnectingSocketButtonColor
@@ -30,15 +32,14 @@ fun ConnectionButton(connectionStatus: ConnectionStatus, onClickMethod: () -> Un
             MaterialTheme.colorScheme.primary
         }
     }
-    Box(
-        contentAlignment = Alignment.Center
-    ) {
         Button(
             colors = ButtonDefaults.buttonColors(backgroundColor),
-            onClick = { onClickMethod() }) {
+            onClick = {
+                onClickMethod()
+            }
+        ) {
             Text(text)
         }
-    }
 }
 
 enum class ConnectionStatus {
