@@ -1,4 +1,4 @@
-package com.sal7one.serversocket
+package com.sal7one.serversocket.ui
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.material3.Button
@@ -8,6 +8,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.LocalContext
+import com.sal7one.serversocket.R
 import com.sal7one.serversocket.ui.theme.ConnectedSocketButtonColor
 
 @Composable

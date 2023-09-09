@@ -8,7 +8,7 @@ import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.preferencesDataStoreFile
-import com.sal7one.serversocket.domain.StringConstants
+import com.sal7one.serversocket.utils.StringConstants
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -23,7 +23,7 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 @Module
 object PersistenceModule {
-    private val NETWORK_PREFERENCES = StringConstants.preferenceDataStore
+    private const val NETWORK_PREFERENCES = StringConstants.preferenceDataStore
 
     @Singleton
     @Provides

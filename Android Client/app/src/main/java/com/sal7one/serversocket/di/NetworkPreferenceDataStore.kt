@@ -5,11 +5,11 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
-import com.sal7one.serversocket.domain.StringConstants
+import com.sal7one.serversocket.utils.StringConstants
 import javax.inject.Inject
 
 class NetworkPreferenceDataStore @Inject constructor(
-    private val dataStore: DataStore<Preferences>
+    private val dataStore: DataStore<Preferences>,
 ) {
     object StoredKeys {
         val ipAddress = stringPreferencesKey(StringConstants.IP_PREFERENCES_KEY)
