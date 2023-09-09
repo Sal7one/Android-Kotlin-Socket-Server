@@ -1,15 +1,16 @@
 package com.sal7one.serversocket.ui
 
 
+import android.net.http.NetworkException
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sal7one.serversocket.data.AppSensorManager
+import com.sal7one.serversocket.data.NetworkManager
 import com.sal7one.serversocket.di.NetworkPreferenceDataStore
 import com.sal7one.serversocket.di.SensorData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -17,14 +18,19 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.DataOutputStream
+import java.net.NoRouteToHostException
 import java.net.Socket
 import javax.inject.Inject
 
 @HiltViewModel
 class AppViewModel @Inject constructor(
     private val dataStoreManager: NetworkPreferenceDataStore,
+    private val networkManager: NetworkManager,
     private val sensorManager: AppSensorManager,
 ) : ViewModel() {
+
+    private val _exceptions = MutableStateFlow<Exception?>(null)
+    val exceptions = _exceptions.asStateFlow()
 
     private val _connectionStatus = MutableStateFlow(ConnectionStatus.NOT_CONNECTED)
     val connectionStatus = _connectionStatus.asStateFlow()
@@ -54,6 +60,9 @@ class AppViewModel @Inject constructor(
         }
     }
 
+    fun doesHaveNetwork() : Boolean{
+        return networkManager.hasNetworkConnection()
+    }
     private fun collectSensorData() {
         viewModelScope.launch {
             sensorManager.sensorChannel
@@ -96,7 +105,7 @@ class AppViewModel @Inject constructor(
         if (connectionStatus.value != ConnectionStatus.CONNECTED) {
             _connectionStatus.value = ConnectionStatus.CONNECTING
             processSocketConnection(cleanedHost, portAddress)
-        }else{
+        } else {
             _connectionStatus.value = ConnectionStatus.NOT_CONNECTED
         }
     }
@@ -115,13 +124,21 @@ class AppViewModel @Inject constructor(
                             dos.flush()
                         }
                     }
-                } catch (exception: Exception) {
-                    _connectionStatus.value = ConnectionStatus.NOT_CONNECTED
+                } catch (exception: NoRouteToHostException) {
                     exception.printStackTrace()
+                    _connectionStatus.value = ConnectionStatus.NOT_CONNECTED
+                    // TODO separate this layer with error message types
+                    _exceptions.emit(exception)
+                    break
+                } catch (exception: Exception) {
+                    exception.printStackTrace()
+                    _connectionStatus.value = ConnectionStatus.NOT_CONNECTED
+                    _exceptions.emit(exception)
                     break
                 }
             }
         }
+
 
     private fun saveNetworkSettings(host: String, port: Int) =
         viewModelScope.launch(Dispatchers.IO) {

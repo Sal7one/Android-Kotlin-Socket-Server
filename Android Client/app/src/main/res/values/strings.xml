@@ -3,4 +3,7 @@
     <string name="connected">Connected</string>
     <string name="connecting">Connecting</string>
     <string name="connect">Connect</string>
+    <string name="no_host">No host found with this IP and Port</string>
+    <string name="something_wrong">Something wrong happened</string>
+    <string name="check_the_connection">Check your WIFI</string>
 </resources>
