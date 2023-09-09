@@ -97,6 +97,7 @@ class AppViewModel @Inject constructor(
         processSocketConnection(cleanedHost, portAddress)
     }
 
+    // TODO server repo
     private suspend fun processSocketConnection(host: String, port: Int) =
         viewModelScope.launch(Dispatchers.IO) {
             while (_connectionStatus.value) {
